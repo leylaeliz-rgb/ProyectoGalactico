@@ -1,6 +1,19 @@
-var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddOpenApi();
+var app = builder.Build();
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/openapi/v1.json", "mini Proyecto Api - Prueba");
+    });
+}
+
+app.MapGet("/", () => "proyecto con swagger");
+
 
 app.Run();
