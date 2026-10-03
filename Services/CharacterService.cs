@@ -7,8 +7,6 @@ namespace ProyectoGalactico.Services
     public class CharacterService
     {
         // Las listas son estáticas y compartidas: el lock evita choques entre peticiones
-        private readonly object _lock = new();
-
         public ServiceResult<List<Character>> GetAll(string? faccion, bool? fuerzaSensitivo)
         {
             char? code = null;
@@ -19,7 +17,7 @@ namespace ProyectoGalactico.Services
                     return ServiceResult<List<Character>>.Invalid("Facción no válida. Usa Rebelde, Imperio o Neutral.");
             }
 
-            lock (_lock)
+            lock (DataForModels.Sync)
             {
                 var query = DataForModels.Characters.AsEnumerable();
                 if (code is not null) query = query.Where(c => c.faccion == code);
@@ -30,7 +28,7 @@ namespace ProyectoGalactico.Services
 
         public ServiceResult<Character> GetById(int id)
         {
-            lock (_lock)
+            lock (DataForModels.Sync)
             {
                 var character = DataForModels.Characters.FirstOrDefault(c => c.Id == id);
                 return character is null
@@ -44,7 +42,7 @@ namespace ProyectoGalactico.Services
             var error = Validate(input);
             if (error is not null) return ServiceResult<Character>.Invalid(error);
 
-            lock (_lock)
+            lock (DataForModels.Sync)
             {
                 var id = DataForModels.Characters.Count == 0
                     ? 1
@@ -63,7 +61,7 @@ namespace ProyectoGalactico.Services
             var error = Validate(input);
             if (error is not null) return ServiceResult<Character>.Invalid(error);
 
-            lock (_lock)
+            lock (DataForModels.Sync)
             {
                 var index = DataForModels.Characters.FindIndex(c => c.Id == id);
                 if (index < 0) return ServiceResult<Character>.NotFound($"No existe el personaje {id}.");
@@ -86,7 +84,7 @@ namespace ProyectoGalactico.Services
 
         public ServiceResult<bool> Delete(int id)
         {
-            lock (_lock)
+            lock (DataForModels.Sync)
             {
                 var character = DataForModels.Characters.FirstOrDefault(c => c.Id == id);
                 if (character is null) return ServiceResult<bool>.NotFound($"No existe el personaje {id}.");

@@ -19,8 +19,6 @@ if (app.Environment.IsDevelopment())
         options.DisplayRequestDuration();
     });
 }
-
-app.MapGet("/", () => "proyecto con swagger");
 app.MapCharacterEndpoints();
 
 app.Run();

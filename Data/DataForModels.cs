@@ -5,6 +5,7 @@ namespace ProyectoGalactico.Data
     public class DataForModels
     {
 
+        public static readonly object Sync = new();
         // faccion: 'R' Rebelde, 'I' Imperio, 'N' Neutral
         // estado:  'V' vivo, 'M' muerto, 'D' desconocido
         public static List<Character> Characters = new()
