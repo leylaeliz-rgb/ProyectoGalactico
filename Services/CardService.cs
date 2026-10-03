@@ -39,7 +39,5 @@ namespace ProyectoGalactico.Services
                     .FirstOrDefault();
             }
         }
-
-       
     }
 }
