@@ -21,7 +21,16 @@ namespace ProyectoGalactico.Endpoints
                 .WithGroupName("v1")
                 .WithSummary("Obtiene una carta por id");
 
-           
+            group.MapPost("/", (CardService service, CardsCharacterInput input) =>
+            {
+                var result = service.Create(input);
+                return result.Status == ResultStatus.Ok
+                    ? Results.Created($"/cartas/{result.Value!.Id}", result.Value)
+                    : result.ToHttp();
+            })
+                .WithGroupName("v2")
+                .WithSummary("Crea una carta para un personaje existente");
+
         }
     }
 }
