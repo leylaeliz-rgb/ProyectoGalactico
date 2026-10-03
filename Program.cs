@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi("v1");
 builder.Services.AddOpenApi("v2");
 builder.Services.AddSingleton<CharacterService>();
+builder.Services.AddSingleton<CardService>();
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
@@ -20,5 +21,5 @@ if (app.Environment.IsDevelopment())
     });
 }
 app.MapCharacterEndpoints();
-
+app.MapCardEndpoints();
 app.Run();
