@@ -28,5 +28,18 @@ namespace ProyectoGalactico.Services
             }
         }
 
+        // Si un personaje tiene varias cartas, cuenta la de mayor peligrosidad
+        public CardsCharacter? GetBestCard(int characterId)
+        {
+            lock (DataForModels.Sync)
+            {
+                return DataForModels.Cards
+                    .Where(c => c.characterId == characterId)
+                    .OrderByDescending(c => c.dangerousLevel)
+                    .FirstOrDefault();
+            }
+        }
+
+       
     }
 }
