@@ -1,1 +1,11 @@
 .vs/
+
+bin/
+obj/
+
+# Archivos de configuración personal de Visual Studio / usuario
+*.csproj.user
+
+# Archivos de configuración con posibles credenciales o variables locales
+appsettings.json
+appsettings.Development.json
