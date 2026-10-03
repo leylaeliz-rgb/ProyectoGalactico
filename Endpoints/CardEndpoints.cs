@@ -15,6 +15,13 @@ namespace ProyectoGalactico.Endpoints
                 .WithGroupName("v1")
                 .WithSummary("Lista cartas con filtros opcionales")
                 .WithDescription("Filtra por personaje (characterId) y por peligrosidad mínima.");
+
+            group.MapGet("/{id:int}", (CardService service, int id) =>
+                    service.GetById(id).ToHttp())
+                .WithGroupName("v1")
+                .WithSummary("Obtiene una carta por id");
+
+           
         }
     }
 }
