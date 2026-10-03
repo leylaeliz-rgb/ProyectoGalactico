@@ -1,10 +1,11 @@
-
+using ProyectoGalactico.Endpoints;
+using ProyectoGalactico.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 builder.Services.AddOpenApi("v1");
 builder.Services.AddOpenApi("v2");
+builder.Services.AddSingleton<CharacterService>();
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
@@ -20,6 +21,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapGet("/", () => "proyecto con swagger");
-
+app.MapCharacterEndpoints();
 
 app.Run();
