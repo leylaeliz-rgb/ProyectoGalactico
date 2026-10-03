@@ -31,6 +31,10 @@ namespace ProyectoGalactico.Endpoints
                 .WithGroupName("v2")
                 .WithSummary("Crea una carta para un personaje existente");
 
+            group.MapPut("/{id:int}", (CardService service, int id, CardsCharacterInput input) =>
+                    service.Update(id, input).ToHttp())
+                .WithGroupName("v2")
+                .WithSummary("Modifica una carta");
         }
     }
 }
