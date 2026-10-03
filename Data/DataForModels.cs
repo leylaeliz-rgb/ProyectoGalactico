@@ -68,6 +68,7 @@ namespace ProyectoGalactico.Data
                         "Enfrentamiento definitivo entre Optimus Prime y Megatron.",
               new List<int> { 7, 9 }, new List<int>(), null)
         };
-
+        public static int NexId<T>(IEnumerable<T> Items, Func<T, int> idSelector) =>
+            Items.Select(idSelector).DefaultIfEmpty(0).Max() + 1;
     }
 }
