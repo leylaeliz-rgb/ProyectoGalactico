@@ -16,5 +16,17 @@ namespace ProyectoGalactico.Services
                 return query.ToList();
             }
         }
+
+        public ServiceResult<CardsCharacter> GetById(int id)
+        {
+            lock (DataForModels.Sync)
+            {
+                var card = DataForModels.Cards.FirstOrDefault(c => c.Id == id);
+                return card is null
+                    ? ServiceResult<CardsCharacter>.NotFound($"No existe la carta {id}.")
+                    : ServiceResult<CardsCharacter>.Ok(card);
+            }
+        }
+
     }
 }
