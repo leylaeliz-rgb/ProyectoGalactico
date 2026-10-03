@@ -2,14 +2,20 @@
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi();
+
+builder.Services.AddOpenApi("v1");
+builder.Services.AddOpenApi("v2");
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.UseSwaggerUI(options =>
     {
-        options.SwaggerEndpoint("/openapi/v1.json", "mini Proyecto Api - Prueba");
+        options.SwaggerEndpoint("/openapi/v1.json", "Proyecto Galactico Todos contra todos - Juego ");
+        options.SwaggerEndpoint("/openapi/v2.json", "Proyecto Galactico - Zona de Administración");
+        options.DocumentTitle = "Manual de Operaciones - Proyecto Galáctico";
+        options.EnableFilter();// Habilita barra de búsqueda de endpoints
+        options.DisplayRequestDuration();
     });
 }
 
