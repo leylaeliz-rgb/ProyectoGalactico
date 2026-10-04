@@ -39,11 +39,10 @@ namespace ProyectoGalactico.Services
 
         public ServiceResult<Character> Create(CharacterInput input)
         {
-            var error = Validate(input);
-            if (error is not null) return ServiceResult<Character>.Invalid(error);
-
             lock (DataForModels.Sync)
             {
+                var error = Validate(input, null);
+                if (error is not null) return ServiceResult<Character>.Invalid(error);
                 var id = DataForModels.Characters.Count == 0
                     ? 1
                     : DataForModels.Characters.Max(c => c.Id) + 1;
@@ -58,13 +57,13 @@ namespace ProyectoGalactico.Services
 
         public ServiceResult<Character> Update(int id, CharacterInput input)
         {
-            var error = Validate(input);
-            if (error is not null) return ServiceResult<Character>.Invalid(error);
-
             lock (DataForModels.Sync)
             {
                 var index = DataForModels.Characters.FindIndex(c => c.Id == id);
                 if (index < 0) return ServiceResult<Character>.NotFound($"No existe el personaje {id}.");
+
+                var error = Validate(input, id);
+                if (error is not null) return ServiceResult<Character>.Invalid(error);
 
                 // Un record no se modifica: se crea una copia con 'with' y se reemplaza en la lista
                 var updated = DataForModels.Characters[index] with
@@ -97,13 +96,20 @@ namespace ProyectoGalactico.Services
                 return ServiceResult<bool>.Ok(true);
             }
         }
-
-        private static string? Validate(CharacterInput i)
+        private static string? Validate(CharacterInput i, int? id)
         {
             if (string.IsNullOrWhiteSpace(i.name)) return "El nombre es obligatorio.";
             if (string.IsNullOrWhiteSpace(i.species)) return "La especie es obligatoria.";
             if (!GameCodes.IsValidFaction(i.faccion)) return "La facción debe ser R (Rebelde), I (Imperio) o N (Neutral).";
             if (!GameCodes.IsValidState(i.estado)) return "El estado debe ser V (vivo), M (muerto) o D (desconocido).";
+
+            var hasRegisteredDeath = id is not null && DataForModels.Events.Any(e => e.deadIds.Contains(id.Value));
+
+            if (i.estado == 'M' && !hasRegisteredDeath)
+                return "Un personaje solo pasa a muerto cuando un evento registra su muerte.";
+            if (hasRegisteredDeath && i.estado != 'M')
+                return "Este personaje tiene una muerte registrada en un evento: su estado debe seguir siendo M.";
+
             return null;
         }
     }
