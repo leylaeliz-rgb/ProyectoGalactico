@@ -27,6 +27,17 @@ namespace ProyectoGalactico.Endpoints
                 .WithSummary("Participante con mayor poder del evento")
                 .WithDescription("Poder = peligrosidad de su mejor carta + bono por sensibilidad a la Fuerza. En empate gana el de menor id.");
 
+            group.MapPost("/", (EventService service, EventInput input) =>
+            {
+                var result = service.Create(input);
+                return result.Status == ResultStatus.Ok
+                    ? Results.Created($"/eventos/{result.Value!.Id}", result.Value)
+                    : result.ToHttp();
+            })
+                .WithGroupName("v2")
+                .WithSummary("Crea un evento")
+                .WithDescription("La fecha va como texto: '10 BBY', '3 ABY' o 'Batalla de Yavin'. Los ids en deadIds pasan a estado muerto.");
+
            
         }
     }
