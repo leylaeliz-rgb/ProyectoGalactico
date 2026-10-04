@@ -55,6 +55,131 @@ namespace ProyectoGalactico.Services
             }
         }
 
+        public ServiceResult<EventResponse> Create(EventInput input)
+        {
+            lock (DataForModels.Sync)
+            {
+                var error = Validate(input, null, out var year);
+                if (error is not null) return ServiceResult<EventResponse>.Invalid(error);
+
+                var id = DataForModels.Events.Count == 0 ? 1 : DataForModels.Events.Max(e => e.Id) + 1;
+
+                var created = new Event(id, input.name.Trim(), year, input.location.Trim(),
+                    input.description.Trim(), input.participantIds.ToList(), input.deadIds.ToList(), null);
+
+                DataForModels.Events.Add(created);
+                ApplyDeaths(created.deadIds); // efecto sobre la otra colección
+
+                return ServiceResult<EventResponse>.Ok(ToResponse(created));
+            }
+        }
+
+        public ServiceResult<EventResponse> Update(int id, EventInput input)
+        {
+            lock (DataForModels.Sync)
+            {
+                var index = DataForModels.Events.FindIndex(e => e.Id == id);
+                if (index < 0) return ServiceResult<EventResponse>.NotFound($"No existe el evento {id}.");
+
+                var current = DataForModels.Events[index];
+                var error = Validate(input, current, out var year);
+                if (error is not null) return ServiceResult<EventResponse>.Invalid(error);
+
+                // Si cambian los participantes, el ganador ya no es válido
+                var sameParticipants = current.participantIds.Order().SequenceEqual(input.participantIds.Order());
+
+                var updated = current with
+                {
+                    name = input.name.Trim(),
+                    year = year,
+                    location = input.location.Trim(),
+                    description = input.description.Trim(),
+                    participantIds = input.participantIds.ToList(),
+                    deadIds = input.deadIds.ToList(),
+                    winner = sameParticipants ? current.winner : null
+                };
+
+                DataForModels.Events[index] = updated;
+                ApplyDeaths(updated.deadIds);
+
+                return ServiceResult<EventResponse>.Ok(ToResponse(updated));
+            }
+        }
+
+
+        // current es null al crear; al modificar es el evento actual (se excluye de las comparaciones)
+        private static string? Validate(EventInput i, Event? current, out int year)
+        {
+            year = 0;
+            if (string.IsNullOrWhiteSpace(i.name)) return "El nombre es obligatorio.";
+            if (string.IsNullOrWhiteSpace(i.location)) return "La ubicación es obligatoria.";
+            if (string.IsNullOrWhiteSpace(i.description)) return "La descripción es obligatoria.";
+            if (!YearConverter.TryParse(i.year, out year))
+                return "Fecha inválida. Usa formatos como '10 BBY', '3 ABY' o 'Batalla de Yavin'.";
+
+            var newYear = year; // un parámetro out no se puede usar dentro de lambdas
+            var participants = i.participantIds ?? [];
+            var dead = i.deadIds ?? [];
+
+            if (participants.Count == 0) return "El evento necesita al menos un participante.";
+            if (participants.Distinct().Count() != participants.Count) return "Hay participantes repetidos.";
+            if (dead.Distinct().Count() != dead.Count) return "Hay muertes repetidas.";
+
+            foreach (var id in participants)
+                if (!DataForModels.Characters.Any(c => c.Id == id))
+                    return $"No existe el personaje {id}.";
+
+            if (dead.Any(id => !participants.Contains(id)))
+                return "Los personajes que mueren deben estar entre los participantes.";
+
+            var others = DataForModels.Events.Where(e => current is null || e.Id != current.Id).ToList();
+
+            // 1. No se puede quitar una muerte ya registrada
+            if (current is not null)
+            {
+                foreach (var id in current.deadIds)
+                    if (!dead.Contains(id))
+                        return $"No se puede quitar la muerte registrada de {NameOf(id)}.";
+            }
+
+            // 2. Nadie muere dos veces
+            foreach (var id in dead)
+            {
+                var previous = others.FirstOrDefault(e => e.deadIds.Contains(id));
+                if (previous is not null)
+                    return $"{NameOf(id)} ya murió en '{previous.name}'.";
+            }
+
+            // 3. Nadie participa después de su muerte
+            foreach (var id in participants)
+            {
+                var death = others.FirstOrDefault(e => e.deadIds.Contains(id));
+                if (death is not null && newYear > death.year)
+                    return $"{NameOf(id)} murió en '{death.name}' ({YearConverter.Format(death.year)}) y no puede participar en un evento posterior.";
+            }
+
+            // 4. Una muerte nueva no puede dejar participaciones posteriores ya registradas
+            foreach (var id in dead)
+            {
+                var later = others.FirstOrDefault(e => e.year > newYear && e.participantIds.Contains(id));
+                if (later is not null)
+                    return $"{NameOf(id)} participa en '{later.name}', que es posterior a esta muerte.";
+            }
+
+            return null;
+        }
+
+        // Un record no se modifica: se reemplaza por una copia con el estado cambiado
+        private static void ApplyDeaths(List<int> deadIds)
+        {
+            foreach (var id in deadIds)
+            {
+                var index = DataForModels.Characters.FindIndex(c => c.Id == id);
+                if (index >= 0)
+                    DataForModels.Characters[index] = DataForModels.Characters[index] with { estado = 'M' };
+            }
+        }
+
         private static string NameOf(int id) =>
             DataForModels.Characters.FirstOrDefault(c => c.Id == id)?.Name ?? $"Personaje {id}";
 
