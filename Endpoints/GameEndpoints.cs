@@ -1,6 +1,6 @@
 ﻿using ProyectoGalactico.Common;
 using ProyectoGalactico.Services;
-
+using ProyectoGalactico.OpenApi;
 namespace ProyectoGalactico.Endpoints
 {
     public static class GameEndpoints

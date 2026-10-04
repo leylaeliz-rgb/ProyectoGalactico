@@ -1,6 +1,7 @@
 ﻿using ProyectoGalactico.Common;
 using ProyectoGalactico.Models;
 using ProyectoGalactico.Services;
+using ProyectoGalactico.OpenApi;
 
 namespace ProyectoGalactico.Endpoints
 {
