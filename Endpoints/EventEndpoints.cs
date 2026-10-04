@@ -38,7 +38,11 @@ namespace ProyectoGalactico.Endpoints
                 .WithSummary("Crea un evento")
                 .WithDescription("La fecha va como texto: '10 BBY', '3 ABY' o 'Batalla de Yavin'. Los ids en deadIds pasan a estado muerto.");
 
-           
+            group.MapPut("/{id:int}", (EventService service, int id, EventInput input) =>
+                    service.Update(id, input).ToHttp())
+                .WithGroupName("v2")
+                .WithSummary("Modifica un evento");
+
         }
     }
 }
