@@ -1,4 +1,5 @@
-﻿namespace ProyectoGalactico.Common
+﻿using ProyectoGalactico.Models.Responses;
+namespace ProyectoGalactico.Common
 {
     public enum ResultStatus { Ok, NotFound, Invalid}
     public record ServiceResult<T>(ResultStatus Status, T? Value, string? Error)
@@ -9,12 +10,11 @@
     }
     public static class ServiceResultExtensions
     {
-        // respuesta HTTP
-        public static IResult ToHttp<T>(this ServiceResult<T> r) => r.Status switch
+            public static IResult ToHttp<T>(this ServiceResult<T> r) => r.Status switch
         {
             ResultStatus.Ok => Results.Ok(r.Value),
-            ResultStatus.NotFound => Results.NotFound(new { error = r.Error }),
-            _ => Results.BadRequest(new { error = r.Error })
+            ResultStatus.NotFound => Results.NotFound(new ErrorResponse(r.Error!)),
+            _ => Results.BadRequest(new ErrorResponse(r.Error!))
         };
-     }
+    }
     }
