@@ -43,6 +43,12 @@ namespace ProyectoGalactico.Endpoints
                 .WithGroupName("v2")
                 .WithSummary("Modifica un evento");
 
+            // Relación personaje -> eventos
+            app.MapGet("/personajes/{id:int}/eventos", (EventService service, int id) =>
+                    service.GetByCharacter(id).ToHttp())
+                .WithTags("Personajes")
+                .WithGroupName("v1")
+                .WithSummary("Eventos en los que participa un personaje");
         }
     }
 }
