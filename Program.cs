@@ -8,6 +8,8 @@ builder.Services.AddOpenApi("v2");
 builder.Services.AddSingleton<CharacterService>();
 builder.Services.AddSingleton<CardService>();
 builder.Services.AddSingleton<EventService>();
+builder.Services.AddSingleton<BattleService>();
+builder.Services.AddSingleton<RankingService>();
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
@@ -24,4 +26,5 @@ if (app.Environment.IsDevelopment())
 app.MapCharacterEndpoints();
 app.MapCardEndpoints();
 app.MapEventEndpoints();
+app.MapGameEndpoints();
 app.Run();
