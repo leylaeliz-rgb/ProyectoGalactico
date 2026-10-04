@@ -2,6 +2,7 @@
 using ProyectoGalactico.Models;
 using ProyectoGalactico.Services;
 using ProyectoGalactico.OpenApi;
+using ProyectoGalactico.Models.Responses;
 namespace ProyectoGalactico.Endpoints
 {
     public static class EventEndpoints
