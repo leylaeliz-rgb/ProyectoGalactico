@@ -16,7 +16,18 @@ namespace ProyectoGalactico.Endpoints
                 .WithSummary("Lista eventos en orden cronológico")
                 .WithDescription("Filtra por personaje (characterId) y por rango de fechas: desde=10 BBY&hasta=3 ABY.");
 
-            
+            group.MapGet("/{id:int}", (EventService service, int id) =>
+                    service.GetById(id).ToHttp())
+                .WithGroupName("v1")
+                .WithSummary("Obtiene un evento por id");
+
+            group.MapGet("/{id:int}/mvp", (EventService service, int id) =>
+                    service.GetMvp(id).ToHttp())
+                .WithGroupName("v1")
+                .WithSummary("Participante con mayor poder del evento")
+                .WithDescription("Poder = peligrosidad de su mejor carta + bono por sensibilidad a la Fuerza. En empate gana el de menor id.");
+
+           
         }
     }
 }
