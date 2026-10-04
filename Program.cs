@@ -7,6 +7,7 @@ builder.Services.AddOpenApi("v1");
 builder.Services.AddOpenApi("v2");
 builder.Services.AddSingleton<CharacterService>();
 builder.Services.AddSingleton<CardService>();
+builder.Services.AddSingleton<EventService>();
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
@@ -22,4 +23,5 @@ if (app.Environment.IsDevelopment())
 }
 app.MapCharacterEndpoints();
 app.MapCardEndpoints();
+app.MapEventEndpoints();
 app.Run();
