@@ -106,6 +106,33 @@ namespace ProyectoGalactico.Services
             }
         }
 
+        public ServiceResult<MvpResponse> GetMvp(int eventId)
+        {
+            lock (DataForModels.Sync)
+            {
+                var ev = DataForModels.Events.FirstOrDefault(e => e.Id == eventId);
+                if (ev is null) return ServiceResult<MvpResponse>.NotFound($"No existe el evento {eventId}.");
+
+                MvpResponse? best = null;
+                foreach (var pid in ev.participantIds)
+                {
+                    var character = DataForModels.Characters.FirstOrDefault(c => c.Id == pid);
+                    var card = cards.GetBestCard(pid);
+                    if (character is null || card is null) continue;
+
+                    var score = PowerCalculator.Score(character, card);
+
+                    // En empate gana el de menor id, para que el resultado sea siempre el mismo
+                    if (best is null || score > best.Score || (score == best.Score && character.Id < best.CharacterId))
+                        best = new MvpResponse(ev.Id, character.Id, character.Name, card.Id,
+                            card.dangerousLevel, PowerCalculator.Bonus(character), score);
+                }
+
+                return best is null
+                    ? ServiceResult<MvpResponse>.Invalid("Ningún participante del evento tiene carta.")
+                    : ServiceResult<MvpResponse>.Ok(best);
+            }
+        }
 
         // current es null al crear; al modificar es el evento actual (se excluye de las comparaciones)
         private static string? Validate(EventInput i, Event? current, out int year)
