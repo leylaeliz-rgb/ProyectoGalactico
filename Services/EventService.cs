@@ -28,7 +28,21 @@ namespace ProyectoGalactico.Services
             }
         }
 
-  
+        public ServiceResult<EventResponse> GetById(int id)
+        {
+            lock (DataForModels.Sync)
+            {
+                var ev = DataForModels.Events.FirstOrDefault(e => e.Id == id);
+                return ev is null
+                    ? ServiceResult<EventResponse>.NotFound($"No existe el evento {id}.")
+                    : ServiceResult<EventResponse>.Ok(ToResponse(ev));
+            }
+        }
+
+
+        private static string NameOf(int id) =>
+            DataForModels.Characters.FirstOrDefault(c => c.Id == id)?.Name ?? $"Personaje {id}";
+
         private static EventResponse ToResponse(Event e) =>
             new(e.Id, e.name, YearConverter.Format(e.year), e.year, e.location, e.description,
                 e.participantIds, e.deadIds, e.winner);
