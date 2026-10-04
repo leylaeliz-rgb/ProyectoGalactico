@@ -39,6 +39,21 @@ namespace ProyectoGalactico.Services
             }
         }
 
+        public ServiceResult<List<EventResponse>> GetByCharacter(int characterId)
+        {
+            lock (DataForModels.Sync)
+            {
+                if (!DataForModels.Characters.Any(c => c.Id == characterId))
+                    return ServiceResult<List<EventResponse>>.NotFound($"No existe el personaje {characterId}.");
+
+                var list = DataForModels.Events
+                    .Where(e => e.participantIds.Contains(characterId))
+                    .OrderBy(e => e.year).ThenBy(e => e.Id)
+                    .Select(ToResponse).ToList();
+
+                return ServiceResult<List<EventResponse>>.Ok(list);
+            }
+        }
 
         private static string NameOf(int id) =>
             DataForModels.Characters.FirstOrDefault(c => c.Id == id)?.Name ?? $"Personaje {id}";
