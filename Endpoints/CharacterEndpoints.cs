@@ -24,6 +24,23 @@ namespace ProyectoGalactico.Endpoints
                 .WithSummary("Obtiene un personaje por id")
                 .ProducesRead<Character>();
 
+            //defensa 
+
+            //group.MapGet("/", (CardService service, int? characterId, int? minDangerousLevel) =>
+            //        Results.Ok(service.GetAll(characterId, minDangerousLevel)))
+            //    .WithGroupName("v1")
+            //    .WithSummary("Lista cartas con filtros opcionales")
+            //    .WithDescription("Filtra por personaje (characterId) y por peligrosidad mínima.")
+            //    .Produces<List<CardsCharacter>>();
+
+            //group.MapGet("/", (CharacterService service, CardService service2, int ? characterId, int minDangerousLevel,string? faccion, bool? fuerzaSensitivo) =>
+            //       service.GetAll(faccion, fuerzaSensitivo).ToHttp())
+            //   .WithGroupName("v1")
+            //   .WithSummary("Lista personajes con filtros opcionales")
+            //   .WithDescription("Filtra por facción (Rebelde, Imperio, Neutral) y por sensibilidad a la Fuerza.")
+            //   .ProducesList<Character>();
+
+            //// defensa
             group.MapPost("/", (CharacterService service, CharacterInput input) =>
             {
                 var result = service.Create(input);
