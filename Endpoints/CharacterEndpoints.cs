@@ -26,19 +26,17 @@ namespace ProyectoGalactico.Endpoints
 
             //defensa 
 
-            //group.MapGet("/", (CardService service, int? characterId, int? minDangerousLevel) =>
-            //        Results.Ok(service.GetAll(characterId, minDangerousLevel)))
-            //    .WithGroupName("v1")
-            //    .WithSummary("Lista cartas con filtros opcionales")
-            //    .WithDescription("Filtra por personaje (characterId) y por peligrosidad mínima.")
-            //    .Produces<List<CardsCharacter>>();
+            group.MapGet("/{id:int}/con-card", (CharacterService service, int id) =>
 
-            //group.MapGet("/", (CharacterService service, CardService service2, int ? characterId, int minDangerousLevel,string? faccion, bool? fuerzaSensitivo) =>
-            //       service.GetAll(faccion, fuerzaSensitivo).ToHttp())
-            //   .WithGroupName("v1")
-            //   .WithSummary("Lista personajes con filtros opcionales")
-            //   .WithDescription("Filtra por facción (Rebelde, Imperio, Neutral) y por sensibilidad a la Fuerza.")
-            //   .ProducesList<Character>();
+                { 
+                  var resultado = service.ObtenerPersonajesConCartas().FirstOrDefault(x => x.Id == id);
+                  return resultado is null ? Results.NotFound() : Results.Ok(resultado); 
+               
+                })
+               .WithGroupName("v1")
+               .WithSummary("Lista personajes con sus cartas")
+               .WithDescription("Muestra personajes y su(s) carta(s).")
+               .ProducesList<CardCharacterJoin>();
 
             //// defensa
             group.MapPost("/", (CharacterService service, CharacterInput input) =>

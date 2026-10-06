@@ -25,6 +25,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseGalacticSwagger();
 }
+
+app.UseCord();
 app.MapCharacterEndpoints();
 app.MapCardEndpoints();
 app.MapEventEndpoints();
