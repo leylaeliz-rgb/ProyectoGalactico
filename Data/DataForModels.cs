@@ -32,7 +32,7 @@ namespace ProyectoGalactico.Data
             new CardsCharacter(5, 5, "Fuerza", "Mente Jedi", "Sable de luz azul", 7, "https://ejemplo.com/obiwan.png"),
             new CardsCharacter(6, 6, "Rayos", "Relámpago de la Fuerza", "Sable de luz rojo", 10, "https://ejemplo.com/palpatine.png"),
             new CardsCharacter(7, 7, "Tiranía", "Cañón de fusión", "Maza de Energón", 10, "https://ejemplo.com"),
-            new CardsCharacter(8, 9, "Justicia", "Matriz del Liderazgo", "Hacha de Energón", 9, "https://ejemplo.com"),
+            new CardsCharacter(8, 9, "Justicia", "Matriz del Liderazgo", "Hacha de Energón", 9, "https://i.ytimg.com/vi/rlYK8tqSpCg/sddefault.jpg"),
             new CardsCharacter(9, 10, "Vigilancia", "Escaner táctico", "Rifles láser incorporados", 5, "https://ejemplo.com"),
             new CardsCharacter(10, 11, "Traición", "Ataque supersónico", "Rayos némesis", 7, "https://ejemplo.com"),
             new CardsCharacter(11, 12, "Soporte", "Reparación de emergencia", "Sierra médica láser", 5, "https://ejemplo.com"),
