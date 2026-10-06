@@ -10,17 +10,17 @@ namespace ProyectoGalactico.Data
         // estado:  'V' vivo, 'M' muerto, 'D' desconocido
         public static List<Character> Characters = new()
         {
-            new Character(1, "Luke Skywalker", "Humano", 'R', "Alianza Rebelde", 'V', true),
-            new Character(2, "Darth Vader",    "Humano", 'I', "Imperio Galáctico", 'M', true),
-            new Character(3, "Leia Organa",    "Humano", 'R', "Alianza Rebelde", 'V', false),
-            new Character(4, "Han Solo",       "Humano", 'N', "Contrabandista", 'V', false),
-            new Character(5, "Obi-Wan Kenobi", "Humano", 'R', "Orden Jedi", 'M', true),
-            new Character(6, "Emperador Palpatine", "Humano", 'I', "Imperio Galáctico", 'M', false),
-            new Character(7, "Megatron", "Cybertroniano", 'R', "Decepticons", 'V', true),
-            new Character(9, "Optimus Prime", "Cybertroniano", 'I', "Autobots", 'V', true),
-            new Character(10, "C-1300", "Cybertroniano", 'I', "Autobots", 'V', true),
-            new Character(11, "Starscream", "Cybertroniano", 'R', "Decepticons", 'M', true),
-            new Character(12, "Ratchet", "Cybertroniano", 'N', "Autobots", 'V', true),
+            new Character(1, "Luke Skywalker", "Humano", 'R', "Alianza Rebelde", 'V', true, "https://ejemplo.png"),
+            new Character(2, "Darth Vader",    "Humano", 'I', "Imperio Galáctico", 'M', true, "https://ejemplo.png"),
+            new Character(3, "Leia Organa",    "Humano", 'R', "Alianza Rebelde", 'V', false, "https://ejemplo.png"),
+            new Character(4, "Han Solo",       "Humano", 'N', "Contrabandista", 'V', false, "https://ejemplo.png"),
+            new Character(5, "Obi-Wan Kenobi", "Humano", 'R', "Orden Jedi", 'M', true, "https://ejemplo.png"),
+            new Character(6, "Emperador Palpatine", "Humano", 'I', "Imperio Galáctico", 'M', false,"https://ejemplo.png"),
+            new Character(7, "Megatron", "Cybertroniano", 'R', "Decepticons", 'V', true, "https://ejemplo.com/obiwan.png"),
+            new Character(9, "Optimus Prime", "Cybertroniano", 'I', "Autobots", 'V', true, "https://i.ytimg.com/vi/rlYK8tqSpCg/sddefault.jpg"),
+            new Character(10, "C-1300", "Cybertroniano", 'I', "Autobots", 'V', true, "https://ejemplo.png"),
+            new Character(11, "Starscream", "Cybertroniano", 'R', "Decepticons", 'M', true, "https://ejemplo.png"),
+            new Character(12, "Ratchet", "Cybertroniano", 'N', "Autobots", 'V', true, "https://ejemplo.png"),
         };
 
         public static List<CardsCharacter> Cards = new()
