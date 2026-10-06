@@ -48,7 +48,7 @@ namespace ProyectoGalactico.Services
                     : DataForModels.Characters.Max(c => c.Id) + 1;
 
                 var created = new Character(id, input.name.Trim(), input.species.Trim(),
-                    input.faccion, input.afiliacion, input.estado, input.fuerzaSensitivo);
+                    input.faccion, input.afiliacion, input.estado, input.fuerzaSensitivo, input.urlPicture);
 
                 DataForModels.Characters.Add(created);
                 return ServiceResult<Character>.Ok(created);
@@ -111,6 +111,19 @@ namespace ProyectoGalactico.Services
                 return "Este personaje tiene una muerte registrada en un evento: su estado debe seguir siendo M.";
 
             return null;
+        }
+
+        public List<CardCharacterJoin> ObtenerPersonajesConCartas()
+        {
+            return DataForModels.Characters
+                .GroupJoin
+                (
+                DataForModels.Cards,
+                personaje => personaje.Id,
+                carta => carta.characterId,
+                (personaje, cartas) => new CardCharacterJoin(
+                    personaje.Id, personaje.Name, personaje.urlPicture, cartas.ToList())
+               ).ToList();
         }
     }
 }
