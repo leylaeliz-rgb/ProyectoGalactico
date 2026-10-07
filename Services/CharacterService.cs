@@ -96,6 +96,22 @@ namespace ProyectoGalactico.Services
                 return ServiceResult<bool>.Ok(true);
             }
         }
+
+
+        public List<CardCharacterJoin> ObtenerPersonajesConCartas()
+        {
+            return DataForModels.Characters
+                .GroupJoin
+                (
+                DataForModels.Cards,
+                personaje => personaje.Id,
+                carta => carta.characterId,
+                (personaje, cartas) => new CardCharacterJoin(
+                    personaje.Id, personaje.Name, personaje.urlPicture, cartas.ToList())
+               ).ToList();
+        }
+        public CardCharacterJoin? ObtenerPersonaejsConCartas(int id) =>
+            ObtenerPersonajesConCartas().FirstOrDefault(x => x.Id == id);
         private static string? Validate(CharacterInput i, int? id)
         {
             if (string.IsNullOrWhiteSpace(i.name)) return "El nombre es obligatorio.";
@@ -111,19 +127,6 @@ namespace ProyectoGalactico.Services
                 return "Este personaje tiene una muerte registrada en un evento: su estado debe seguir siendo M.";
 
             return null;
-        }
-
-        public List<CardCharacterJoin> ObtenerPersonajesConCartas()
-        {
-            return DataForModels.Characters
-                .GroupJoin
-                (
-                DataForModels.Cards,
-                personaje => personaje.Id,
-                carta => carta.characterId,
-                (personaje, cartas) => new CardCharacterJoin(
-                    personaje.Id, personaje.Name, personaje.urlPicture, cartas.ToList())
-               ).ToList();
         }
     }
 }

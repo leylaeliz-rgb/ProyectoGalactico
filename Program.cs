@@ -15,20 +15,25 @@ builder.Services.AddSingleton<RankingService>();
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
-        policy.WithOrigins("http://localhost:5173")
+    {
+        policy.WithOrigins("http://localhost:5173") 
               .AllowAnyHeader()
-              .AllowAnyMethod());
+              .AllowAnyMethod();
+    });
 });
 
 var app = builder.Build();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseGalacticSwagger();
 }
 
-app.UseCord();
+app.UseCors();
+
 app.MapCharacterEndpoints();
 app.MapCardEndpoints();
 app.MapEventEndpoints();
 app.MapGameEndpoints();
+
 app.Run();

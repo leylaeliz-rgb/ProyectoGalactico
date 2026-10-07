@@ -36,7 +36,7 @@ namespace ProyectoGalactico.Endpoints
                .WithGroupName("v1")
                .WithSummary("Lista personajes con sus cartas")
                .WithDescription("Muestra personajes y su(s) carta(s).")
-               .ProducesList<CardCharacterJoin>();
+               .ProducesList<CardsCharacter>();
 
             //// defensa
             group.MapPost("/", (CharacterService service, CharacterInput input) =>
