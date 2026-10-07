@@ -48,7 +48,7 @@ namespace ProyectoGalactico.Services
                     : DataForModels.Characters.Max(c => c.Id) + 1;
 
                 var created = new Character(id, input.name.Trim(), input.species.Trim(),
-                    input.faccion, input.afiliacion, input.estado, input.fuerzaSensitivo);
+                    input.faccion, input.afiliacion, input.estado, input.fuerzaSensitivo, input.urlPicture);
 
                 DataForModels.Characters.Add(created);
                 return ServiceResult<Character>.Ok(created);
@@ -96,6 +96,22 @@ namespace ProyectoGalactico.Services
                 return ServiceResult<bool>.Ok(true);
             }
         }
+
+
+        public List<CardCharacterJoin> ObtenerPersonajesConCartas()
+        {
+            return DataForModels.Characters
+                .GroupJoin
+                (
+                DataForModels.Cards,
+                personaje => personaje.Id,
+                carta => carta.characterId,
+                (personaje, cartas) => new CardCharacterJoin(
+                    personaje.Id, personaje.Name, personaje.urlPicture, cartas.ToList())
+               ).ToList();
+        }
+        public CardCharacterJoin? ObtenerPersonaejsConCartas(int id) =>
+            ObtenerPersonajesConCartas().FirstOrDefault(x => x.Id == id);
         private static string? Validate(CharacterInput i, int? id)
         {
             if (string.IsNullOrWhiteSpace(i.name)) return "El nombre es obligatorio.";

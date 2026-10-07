@@ -24,6 +24,21 @@ namespace ProyectoGalactico.Endpoints
                 .WithSummary("Obtiene un personaje por id")
                 .ProducesRead<Character>();
 
+            //defensa 
+
+            group.MapGet("/{id:int}/con-card", (CharacterService service, int id) =>
+
+                { 
+                  var resultado = service.ObtenerPersonajesConCartas().FirstOrDefault(x => x.Id == id);
+                  return resultado is null ? Results.NotFound() : Results.Ok(resultado); 
+               
+                })
+               .WithGroupName("v1")
+               .WithSummary("Lista personajes con sus cartas")
+               .WithDescription("Muestra personajes y su(s) carta(s).")
+               .ProducesList<CardsCharacter>();
+
+            //// defensa
             group.MapPost("/", (CharacterService service, CharacterInput input) =>
             {
                 var result = service.Create(input);
